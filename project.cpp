@@ -1,117 +1,169 @@
 #include <iostream>
-#include <fstream>
+#include <cstring>
+#include <cstdio>
 using namespace std;
 
 struct tugas
 {
-    string judul, deskripsi, prioritas, deadline;
+    char judul[100];
+    char deskripsi[500];
+    char prioritas[20];
+    char deadline[20];
     bool selesai;
     tugas *next;
 };
-void tambah(tugas *&head, string judul, string deskripsi, string prioritas, string deadline, bool selesai = false)
+void saveToFile(tugas *head)
 {
-    tugas *newTask = new tugas();
-    newTask->judul = judul;
-    newTask->deskripsi = deskripsi;
-    newTask->prioritas = prioritas;
-    newTask->deadline = deadline;
-    newTask->selesai = selesai;
-    newTask->next = head;
-    head = newTask;
-    cout << "Tugas berhasil ditambahkan!\n";
+    FILE *file = fopen("tugas.dat", "wb");
+    if (!file)
+    {
+        cout << "Gagal membuka file!\n";
+        return;
+    }
+    tugas *curr = head;
+    while (curr)
+    {
+        fwrite(curr, sizeof(tugas), 1, file);
+        curr = curr->next;
+    }
+    fclose(file);
+}
+tugas *loadFromFile()
+{
+    FILE *file = fopen("tugas.dat", "rb");
+    if (!file)
+        return nullptr;
+
+    tugas *head = nullptr;
+    tugas *tail = nullptr;
+    tugas temp;
+
+    while (fread(&temp, sizeof(tugas), 1, file))
+    {
+        tugas *baru = new tugas;
+        *baru = temp;
+        baru->next = nullptr;
+
+        if (!head)
+        {
+            head = tail = baru;
+        }
+        else
+        {
+            tail->next = baru;
+            tail = baru;
+        }
+    }
+    fclose(file);
+    return head;
+}
+void tambah(tugas *&head)
+{
+    int n;
+    cout << "-------menu tambah-------" << endl;
+    cout << "jumlah tugas ditambahkan: ";
+    cin >> n;
+    cin.ignore();
+    for (int i = 0; i < n; i++)
+    {
+        cout << "tugas ke-" << i + 1 << endl;
+        tugas *newTask = new tugas;
+
+        cout << "Judul: ";
+        cin.getline(newTask->judul, sizeof(newTask->judul));
+
+        cout << "Deskripsi: ";
+        cin.getline(newTask->deskripsi, sizeof(newTask->deskripsi));
+
+        cout << "Prioritas (Tinggi/Sedang/Rendah): ";
+        cin.getline(newTask->prioritas, sizeof(newTask->prioritas));
+
+        cout << "Deadline (YYYY-MM-DD): ";
+        cin.getline(newTask->deadline, sizeof(newTask->deadline));
+
+        newTask->selesai = false;
+        newTask->next = head;
+        head = newTask;
+    }
+    saveToFile(head);
+    cout << "Tugas ditambahkan!\n";
 }
 void tampilkan(tugas *head)
 {
-    cout << "\n=== Daftar Tugas ===\n";
-    if (head == nullptr)
+    if (!head)
     {
-        cout << "Belum ada tugas.\n";
+        cout << "Tidak ada tugas!\n";
         return;
     }
-    while (head != nullptr)
+
+    while (head)
     {
         cout << "Judul: " << head->judul << endl;
         cout << "Deskripsi: " << head->deskripsi << endl;
         cout << "Prioritas: " << head->prioritas << endl;
         cout << "Deadline: " << head->deadline << endl;
-        cout << "Status: " << (head->selesai ? "Selesai" : "Belum Selesai") << endl;
+        cout << "Status: " << (head->selesai ? "Selesai" : "Belum") << endl;
         cout << "-------------------\n";
         head = head->next;
     }
 }
-void tampilanmenu()
+void menu()
 {
-    cout << "====================" << endl;
-    cout << "1. Input Data" << endl;
-    cout << "2. Lihat Data" << endl;
-    cout << "3. Sorting" << endl;
-    cout << "4. Searching" << endl;
-    cout << "5. Tandai Tugas Selesai" << endl;
-    cout << "6. Hapus Data" << endl;
-    cout << "7. Simpan dan keluar Data" << endl;
-    cout << "====================" << endl;
-    cout << "Pilih menu: ";
+    cout << "\n|--------Menu--------|\n";
+    cout << "|1. Tambah Tugas     |\n";
+    cout << "|2. Lihat Tugas      |\n";
+    cout << "|3. Urutkan Tugas    |\n";
+    cout << "|4. Cari Tugas       |\n";
+    cout << "|5. Tandai Selesai   |\n";
+    cout << "|6. Hapus Tugas      |\n";
+    cout << "|7. Keluar           |\n";
+    cout << "|Pilih: ";
 }
 
 int main()
 {
-    tugas *head = nullptr;
-    int pilih;
-
-    string judul, deskripsi, prioritas, deadline;
+    tugas *head = loadFromFile();
+    int pilihan;
     do
     {
-        tampilanmenu();
-        cin >> pilih;
+        menu();
+        cin >> pilihan;
         cin.ignore();
-        switch (pilih)
+
+        switch (pilihan)
         {
         case 1:
-        {
-
-            cout << "Masukkan judul tugas: ";
-            getline(cin, judul);
-            cout << "Masukkan deskripsi tugas: ";
-            getline(cin, deskripsi);
-            cout << "Masukkan prioritas (Tinggi/Sedang/Rendah): ";
-            getline(cin, prioritas);
-            cout << "Masukkan deadline (YYYY-MM-DD): ";
-            getline(cin, deadline);
-            tambah(head, judul, deskripsi, prioritas, deadline);
+            tambah(head);
             break;
-        }
         case 2:
-        {
             tampilkan(head);
             break;
-        }
         case 3:
-        {
-            // Sorting
+            // sorting;
             break;
-        }
         case 4:
-        {
             // Searching
             break;
-        }
         case 5:
-        {
             // Tandai tugas selesai
             break;
-        }
         case 6:
-        {
             // Hapus data
             break;
-        }
         case 7:
-        {
-            // Simpan dan keluar data
+            cout << "Keluar...\n";
+            break;
+        default:
+            cout << "Pilihan salah!\n";
         }
-        }
-    } while (pilih != 7);
+
+    } while (pilihan != 7);
+
+    while (head)
     {
-        cout << "exit" << endl;
+        tugas *temp = head;
+        head = head->next;
+        delete temp;
     }
+    return 0;
 }
