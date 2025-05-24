@@ -107,6 +107,167 @@ void tampilkan(tugas *head)
         head = head->next;
     }
 }
+void swapNodes(tugas *a, tugas *b)
+{
+    swap(a->judul, b->judul);
+    swap(a->deskripsi, b->deskripsi);
+    swap(a->prioritas, b->prioritas);
+    swap(a->deadline, b->deadline);
+    swap(a->selesai, b->selesai);
+}
+tugas *getTail(tugas *head)
+{
+    while (head != nullptr && head->next != nullptr)
+    {
+        head = head->next;
+    }
+    return head;
+}
+tugas* partition(tugas* head, tugas* end, tugas*& newHead, tugas*& newEnd) {
+    tugas* pivot = end;
+    tugas *prev = nullptr, *cur = head, *tail = pivot;
+    
+    newHead = nullptr;
+    
+    while (cur != pivot) {
+        if (strcmp(cur->judul, pivot->judul) < 0) {
+            if (newHead == nullptr)
+                newHead = cur;
+            prev = cur;
+            cur = cur->next;
+        } else {
+            if (prev)
+                prev->next = cur->next;
+            tugas* tmp = cur->next;
+            cur->next = nullptr;
+            tail->next = cur;
+            tail = cur;
+            cur = tmp;
+        }
+    }
+    
+    if (newHead == nullptr)
+        newHead = pivot;
+    
+    newEnd = tail;
+    return pivot;
+}
+tugas* quickSortRecur(tugas* head, tugas* end) {
+    if (!head || head == end)
+        return head;
+        
+    tugas *newHead = nullptr, *newEnd = nullptr;
+    tugas* pivot = partition(head, end, newHead, newEnd);
+    
+    if (newHead != pivot) {
+        tugas* tmp = newHead;
+        while (tmp->next != pivot)
+            tmp = tmp->next;
+        tmp->next = nullptr;
+        
+        newHead = quickSortRecur(newHead, tmp);
+        
+        tmp = getTail(newHead);
+        tmp->next = pivot;
+    }
+    
+    pivot->next = quickSortRecur(pivot->next, newEnd);
+    
+    return newHead;
+}
+void quickSort(tugas*& headRef) {
+    if (!headRef) return;
+    
+    headRef = quickSortRecur(headRef, getTail(headRef));
+}
+
+int prioritasValue(const string& prioritas)
+{
+    if (prioritas == "Tinggi") return 3;
+    if (prioritas == "Sedang") return 2;
+    return 1;
+}
+void selectionSortByPrioritas(tugas *head)
+{
+    for (tugas *i = head; i != nullptr; i = i->next)
+    {
+        tugas *min = i;
+        for (tugas *j = i->next; j != nullptr; j = j->next)
+        {
+            if (prioritasValue(j->prioritas) > prioritasValue(min->prioritas))
+            {
+                min = j;
+            }
+        }
+        if (min != i)
+        {
+            swapNodes(min, i);
+        }
+    }
+}
+void bubbleSortByDeadline(tugas *head)
+{
+    bool swapped;
+    tugas *ptr1;
+    tugas *lptr = nullptr;
+    if (head == nullptr)
+        return;
+    do
+    {
+        swapped = false;
+        ptr1 = head;
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->deadline > ptr1->next->deadline)
+            {
+                swapNodes(ptr1, ptr1->next);
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+void sortMenu(tugas *&head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas untuk diurutkan!\n";
+        return;
+    }
+    cout << "\n1. Sort by Judul (Quick Sort)\n";
+    cout << "2. Sort by Prioritas (Selection Sort)\n";
+    cout << "3. Sort by Deadline (Bubble Sort)\n";
+    cout << "4. Kembali ke menu\n";
+    cout << "Pilih: ";
+    int choice;
+    cin >> choice;
+    cin.ignore();
+    switch (choice)
+    {
+    case 1:
+        quickSort(head);
+        cout << "Tugas diurutkan berdasarkan judul!\n";
+        tampilkan(head);
+        break;
+    case 2:
+        selectionSortByPrioritas(head);
+        cout << "Tugas diurutkan berdasarkan prioritas!\n";
+        tampilkan(head);
+        break;
+    case 3:
+        bubbleSortByDeadline(head);
+        cout << "Tugas diurutkan berdasarkan deadline!\n";
+        tampilkan(head);
+        break;
+    case 4:
+        return;
+    default:
+        cout << "Pilihan tidak valid!\n";
+        return;
+    }
+    saveToFile(head);
+}
 void menu()
 {
     cout << "\n|--------Menu--------|\n";
@@ -119,7 +280,6 @@ void menu()
     cout << "|7. Keluar           |\n";
     cout << "|Pilih: ";
 }
-
 int main()
 {
     tugas *head = loadFromFile();
@@ -139,7 +299,7 @@ int main()
             tampilkan(head);
             break;
         case 3:
-            // sorting;
+            sortMenu(head);
             break;
         case 4:
             // Searching
