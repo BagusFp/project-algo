@@ -268,6 +268,124 @@ void sortMenu(tugas *&head)
     }
     saveToFile(head);
 }
+void sequentialSearchByJudul(tugas *head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas!\n";
+        return;
+    }
+    string keyword;
+    cout << "Masukkan judul yang dicari: ";
+    getline(cin, keyword);
+
+    bool found = false;
+    while (head)
+    {
+        if (head->judul == keyword)
+        {
+            cout << "Tugas ditemukan:\n";
+            found = true;
+        }
+        head = head->next;
+    }
+    if (!found)
+    {
+        cout << "Tidak ditemukan tugas dengan judul tersebut!\n";
+    }
+}
+void binarySearchByPrioritas(tugas *head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas!\n";
+        return;
+    }
+
+    selectionSortByPrioritas(head);
+
+    string keyword;
+    cout << "Masukkan prioritas yang dicari (Tinggi/Sedang/Rendah): ";
+    getline(cin, keyword);
+
+    bool found = false;
+    while (head)
+    {
+        if (head->prioritas == keyword)
+        {
+            cout << "Tugas ditemukan:\n";
+            found = true;
+        }
+        else if (prioritasValue(head->prioritas) < prioritasValue(keyword))
+        {
+            break;
+        }
+        head = head->next;
+    }
+    if (!found)
+    {
+        cout << "Tidak ditemukan tugas dengan prioritas tersebut!\n";
+    }
+}
+void sequentialSearchByDeadline(tugas *head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas!\n";
+        return;
+    }
+    string keyword;
+    cout << "Masukkan deadline yang dicari (YYYY-MM-DD): ";
+    getline(cin, keyword);
+
+    bool found = false;
+    while (head)
+    {
+        if (head->deadline == keyword)
+        {
+            cout << "Tugas ditemukan:\n";
+            found = true;
+        }
+        head = head->next;
+    }
+    if (!found)
+    {
+        cout << "Tidak ditemukan tugas dengan deadline tersebut!\n";
+    }
+}
+void searchMenu(tugas *head)
+{
+    cout << "\n1. Search by Judul (Sequential)\n";
+    cout << "2. Search by Prioritas (Binary)\n";
+    cout << "3. Search by Deadline (Sequential)\n";
+    cout << "4. Kembali ke menu\n";
+    cout << "Pilih: ";
+
+    int choice;
+    cin >> choice;
+    cin.ignore();
+
+    switch (choice)
+    {
+    case 1:
+        sequentialSearchByJudul(head);
+        tampilkan(head);
+        break;
+    case 2:
+        binarySearchByPrioritas(head);
+        tampilkan(head);
+        break;
+    case 3:
+        sequentialSearchByDeadline(head);
+        tampilkan(head);
+        break;
+    case 4:
+        cout << "Kembali ke menu\n";
+        break;
+    default:
+        cout << "Pilihan tidak valid!\n";
+    }
+}
 void menu()
 {
     cout << "\n|--------Menu--------|\n";
@@ -302,7 +420,7 @@ int main()
             sortMenu(head);
             break;
         case 4:
-            // Searching
+            searchMenu(head);
             break;
         case 5:
             // Tandai tugas selesai
