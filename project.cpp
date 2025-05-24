@@ -285,6 +285,12 @@ void sequentialSearchByJudul(tugas *head)
         if (head->judul == keyword)
         {
             cout << "Tugas ditemukan:\n";
+            cout << "Judul: " << head->judul << endl;
+            cout << "Deskripsi: " << head->deskripsi << endl;
+            cout << "Prioritas: " << head->prioritas << endl;
+            cout << "Deadline: " << head->deadline << endl;
+            cout << "Status: " << (head->selesai ? "Selesai" : "Belum") << endl;
+            cout << "-------------------\n";
             found = true;
         }
         head = head->next;
@@ -314,6 +320,12 @@ void binarySearchByPrioritas(tugas *head)
         if (head->prioritas == keyword)
         {
             cout << "Tugas ditemukan:\n";
+            cout << "Judul: " << head->judul << endl;
+            cout << "Deskripsi: " << head->deskripsi << endl;
+            cout << "Prioritas: " << head->prioritas << endl;
+            cout << "Deadline: " << head->deadline << endl;
+            cout << "Status: " << (head->selesai ? "Selesai" : "Belum") << endl;
+            cout << "-------------------\n";
             found = true;
         }
         else if (prioritasValue(head->prioritas) < prioritasValue(keyword))
@@ -344,6 +356,12 @@ void sequentialSearchByDeadline(tugas *head)
         if (head->deadline == keyword)
         {
             cout << "Tugas ditemukan:\n";
+            cout << "Judul: " << head->judul << endl;
+            cout << "Deskripsi: " << head->deskripsi << endl;
+            cout << "Prioritas: " << head->prioritas << endl;
+            cout << "Deadline: " << head->deadline << endl;
+            cout << "Status: " << (head->selesai ? "Selesai" : "Belum") << endl;
+            cout << "-------------------\n";
             found = true;
         }
         head = head->next;
@@ -369,15 +387,12 @@ void searchMenu(tugas *head)
     {
     case 1:
         sequentialSearchByJudul(head);
-        tampilkan(head);
         break;
     case 2:
         binarySearchByPrioritas(head);
-        tampilkan(head);
         break;
     case 3:
         sequentialSearchByDeadline(head);
-        tampilkan(head);
         break;
     case 4:
         cout << "Kembali ke menu\n";
