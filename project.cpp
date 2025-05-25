@@ -401,6 +401,44 @@ void searchMenu(tugas *head)
         cout << "Pilihan tidak valid!\n";
     }
 }
+void tandaiSelesai(tugas *head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas!\n";
+        return;
+    }
+    int count = 1;
+    tugas *curr = head;
+    while (curr)
+    {
+        cout << count++ << ". " << curr->judul;
+        if (curr->selesai)
+            cout << " (Selesai)";
+        cout << endl;
+        curr = curr->next;
+    }
+    cout << "Pilih nomor tugas: ";
+    int pilihan;
+    cin >> pilihan;
+    cin.ignore();
+    curr = head;
+    for (int i = 1; i < pilihan && curr; i++)
+    {
+        curr = curr->next;
+    }
+
+    if (curr)
+    {
+        curr->selesai = true;
+        saveToFile(head);
+        cout << "Tugas ditandai selesai!\n";
+    }
+    else
+    {
+        cout << "Nomor tidak valid!\n";
+    }
+}
 void menu()
 {
     cout << "\n|--------Menu--------|\n";
@@ -438,7 +476,7 @@ int main()
             searchMenu(head);
             break;
         case 5:
-            // Tandai tugas selesai
+            tandaiSelesai(head);
             break;
         case 6:
             // Hapus data
