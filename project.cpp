@@ -439,6 +439,90 @@ void tandaiSelesai(tugas *head)
         cout << "Nomor tidak valid!\n";
     }
 }
+void hapusTugas(tugas *&head)
+{
+    if (!head)
+    {
+        cout << "Tidak ada tugas!\n";
+        return;
+    }
+    int pilihan;
+    do
+    {
+        cout << "------menu hapus------" << endl;
+        cout << "1. hapus berdasarkan judul" << endl;
+        cout << "2. hapus semua tugas" << endl;
+        cout << "3. kembali ke menu" << endl;
+        cout << "pilih: ";
+        cin >> pilihan;
+        cin.ignore();
+        if (pilihan == 3)
+        {
+            cout << "kembali ke menu" << endl;
+            break;
+        }
+        else if (pilihan == 2)
+        {
+            while (head)
+            {
+                tugas *temp = head;
+                head = head->next;
+                delete temp;
+            }
+            saveToFile(head);
+            cout << "Semua tugas dihapus!\n";
+            return;
+        }
+        else if (pilihan == 1)
+        {
+            int count = 1;
+            tugas *curr = head;
+            while (curr)
+            {
+                cout << count++ << ". " << curr->judul << endl;
+                curr = curr->next;
+            }
+
+            cout << "Pilih nomor yang akan dihapus: ";
+            int pilihan;
+            cin >> pilihan;
+            cin.ignore();
+
+            if (pilihan == 1)
+            {
+                tugas *temp = head;
+                head = head->next;
+                delete temp;
+                saveToFile(head);
+                cout << "Tugas dihapus!\n";
+                return;
+            }
+
+            tugas *prev = head;
+            for (int i = 1; i < pilihan - 1 && prev; i++)
+            {
+                prev = prev->next;
+            }
+
+            if (prev && prev->next)
+            {
+                tugas *temp = prev->next;
+                prev->next = temp->next;
+                delete temp;
+                saveToFile(head);
+                cout << "Tugas dihapus!\n";
+            }
+            else
+            {
+                cout << "Nomor tidak valid!\n";
+            }
+        }
+        else
+        {
+            cout << "pilihan tidak valid" << endl;
+        }
+    } while (pilihan != 1 && pilihan != 2 && pilihan != 3);
+}
 void menu()
 {
     cout << "\n|--------Menu--------|\n";
@@ -479,7 +563,7 @@ int main()
             tandaiSelesai(head);
             break;
         case 6:
-            // Hapus data
+            hapusTugas(head);
             break;
         case 7:
             cout << "Keluar...\n";
