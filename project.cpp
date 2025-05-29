@@ -1,8 +1,8 @@
 #include <iostream>
-#include <cstring>
-#include <cstdio>
+#include <cstring> // library untuk string manipulation
+#include <cstdio>// library untuk file handling
 using namespace std;
-
+// 
 struct tugas
 {
     char judul[100];
@@ -12,6 +12,7 @@ struct tugas
     bool selesai;
     tugas *next;
 };
+// fungsi untuk menyimpan linked list tugas ke file
 void saveToFile(tugas *head)
 {
     FILE *file = fopen("tugas.dat", "wb");
@@ -28,6 +29,7 @@ void saveToFile(tugas *head)
     }
     fclose(file);
 }
+// fungsi untuk memuat linked list tugas dari file
 tugas *loadFromFile()
 {
     FILE *file = fopen("tugas.dat", "rb");
@@ -57,6 +59,7 @@ tugas *loadFromFile()
     fclose(file);
     return head;
 }
+// fungsi untuk menambahkan tugas baru ke linked list
 void tambah(tugas *&head)
 {
     int n;
@@ -97,6 +100,7 @@ void tambah(tugas *&head)
     saveToFile(head);
     cout << "Tugas ditambahkan!\n";
 }
+// fungsi untuk menampilkan semua tugas dalam linked list
 void tampilkan(tugas *head)
 {
     if (!head)
@@ -116,6 +120,7 @@ void tampilkan(tugas *head)
         head = head->next;
     }
 }
+// fungsi untuk menukar dua tugas dalam linked list
 void swapNodes(tugas *a, tugas *b)
 {
     swap(a->judul, b->judul);
@@ -124,6 +129,7 @@ void swapNodes(tugas *a, tugas *b)
     swap(a->deadline, b->deadline);
     swap(a->selesai, b->selesai);
 }
+// fungsi untuk mendapatkan tail dari linked list
 tugas *getTail(tugas *head)
 {
     while (head != nullptr && head->next != nullptr)
@@ -132,6 +138,7 @@ tugas *getTail(tugas *head)
     }
     return head;
 }
+// fungsi untuk membandingkan dua string secara case-insensitive
 int caseInsensitiveCompare(const char *a, const char *b)
 {
     while (*a && *b)
@@ -144,6 +151,7 @@ int caseInsensitiveCompare(const char *a, const char *b)
     }
     return *a - *b;
 }
+// fungsi untuk partisi linked list untuk quicksort
 tugas *partition(tugas *head, tugas *end, tugas *&newHead, tugas *&newEnd)
 {
     tugas *pivot = end;
@@ -178,6 +186,7 @@ tugas *partition(tugas *head, tugas *end, tugas *&newHead, tugas *&newEnd)
     newEnd = tail;
     return pivot;
 }
+// fungsi rekursif untuk quicksort linked list
 tugas *quickSortRecur(tugas *head, tugas *end)
 {
     if (!head || head == end)
@@ -203,6 +212,7 @@ tugas *quickSortRecur(tugas *head, tugas *end)
 
     return newHead;
 }
+// fungsi untuk melakukan quicksort pada linked list
 void quickSort(tugas *&headRef)
 {
     if (!headRef)
@@ -210,7 +220,7 @@ void quickSort(tugas *&headRef)
 
     headRef = quickSortRecur(headRef, getTail(headRef));
 }
-
+// fungsi untuk mendapatkan nilai prioritas sebagai integer
 int prioritasValue(const string &prioritas)
 {
     if (prioritas == "Tinggi")
@@ -219,6 +229,7 @@ int prioritasValue(const string &prioritas)
         return 2;
     return 1;
 }
+// fungsi untuk melakukan selection sort berdasarkan prioritas
 void selectionSortByPrioritas(tugas *head)
 {
     for (tugas *i = head; i != nullptr; i = i->next)
@@ -237,6 +248,7 @@ void selectionSortByPrioritas(tugas *head)
         }
     }
 }
+// fungsi untuk melakukan bubble sort berdasarkan deadline
 void bubbleSortByDeadline(tugas *head)
 {
     if (!head)
@@ -253,6 +265,7 @@ void bubbleSortByDeadline(tugas *head)
 
         while (ptr1->next != lptr)
         {
+            // membandingkan deadlines sebagai string
             if (strcmp(ptr1->deadline, ptr1->next->deadline) > 0)
             {
                 swapNodes(ptr1, ptr1->next);
@@ -263,6 +276,7 @@ void bubbleSortByDeadline(tugas *head)
         lptr = ptr1;
     } while (swapped);
 }
+// fungsi untuk menampilkan menu pengurutan
 void sortMenu(tugas *&head)
 {
     if (!head)
@@ -303,6 +317,7 @@ void sortMenu(tugas *&head)
     }
     saveToFile(head);
 }
+// fungsi untuk mencari tugas berdasarkan judul secara sequential
 void sequentialSearchByJudul(tugas *head)
 {
     if (!head)
@@ -331,10 +346,11 @@ void sequentialSearchByJudul(tugas *head)
         head = head->next;
     }
     if (!found)
-    {
+    {   
         cout << "Tidak ditemukan tugas dengan judul tersebut!\n";
     }
 }
+// fungsi untuk mencari tugas berdasarkan prioritas secara binary
 void binarySearchByPrioritas(tugas *head)
 {
     if (!head)
@@ -374,6 +390,7 @@ void binarySearchByPrioritas(tugas *head)
         cout << "Tidak ditemukan tugas dengan prioritas tersebut!\n";
     }
 }
+// fungsi untuk mencari tugas berdasarkan deadline secara sequential
 void sequentialSearchByDeadline(tugas *head)
 {
     if (!head)
@@ -406,6 +423,7 @@ void sequentialSearchByDeadline(tugas *head)
         cout << "Tidak ditemukan tugas dengan deadline tersebut!\n";
     }
 }
+// fungsi untuk menampilkan menu pencarian
 void searchMenu(tugas *head)
 {
     cout << "\n1. Search by Judul (Sequential)\n";
@@ -436,6 +454,7 @@ void searchMenu(tugas *head)
         cout << "Pilihan tidak valid!\n";
     }
 }
+// fungsi untuk menandai tugas sebagai selesai
 void tandaiSelesai(tugas *head)
 {
     if (!head)
@@ -474,6 +493,7 @@ void tandaiSelesai(tugas *head)
         cout << "Nomor tidak valid!\n";
     }
 }
+// fungsi untuk menghapus tugas dari linked list
 void hapusTugas(tugas *&head)
 {
     if (!head)
@@ -558,6 +578,7 @@ void hapusTugas(tugas *&head)
         }
     } while (pilihan != 1 && pilihan != 2 && pilihan != 3);
 }
+// fungsi untuk menampilkan menu utama
 void menu()
 {
     cout << "\n|--------Menu--------|\n";
@@ -570,6 +591,7 @@ void menu()
     cout << "|7. Keluar           |\n";
     cout << "|Pilih: ";
 }
+// fungsi utama
 int main()
 {
     tugas *head = loadFromFile();
@@ -608,7 +630,7 @@ int main()
         }
 
     } while (pilihan != 7);
-
+// membersihkan memori
     while (head)
     {
         tugas *temp = head;
