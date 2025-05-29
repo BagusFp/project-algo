@@ -75,8 +75,17 @@ void tambah(tugas *&head)
         cout << "Deskripsi: ";
         cin.getline(newTask->deskripsi, sizeof(newTask->deskripsi));
 
-        cout << "Prioritas (Tinggi/Sedang/Rendah): ";
-        cin.getline(newTask->prioritas, sizeof(newTask->prioritas));
+        while (true)
+        {
+            cout << "Prioritas (Tinggi/Sedang/Rendah): ";
+            cin.getline(newTask->prioritas, sizeof(newTask->prioritas));
+            string prioritasStr = newTask->prioritas;
+            if (prioritasStr == "Tinggi" || prioritasStr == "Sedang" || prioritasStr == "Rendah")
+            {
+                break;
+            }
+            cout << "Prioritas harus Tinggi, Sedang, atau Rendah! Silakan coba lagi.\n";
+        }
 
         cout << "Deadline (YYYY-MM-DD): ";
         cin.getline(newTask->deadline, sizeof(newTask->deadline));
@@ -123,68 +132,91 @@ tugas *getTail(tugas *head)
     }
     return head;
 }
-tugas* partition(tugas* head, tugas* end, tugas*& newHead, tugas*& newEnd) {
-    tugas* pivot = end;
+int caseInsensitiveCompare(const char *a, const char *b)
+{
+    while (*a && *b)
+    {
+        int diff = tolower(*a) - tolower(*b);
+        if (diff != 0)
+            return diff;
+        a++;
+        b++;
+    }
+    return *a - *b;
+}
+tugas *partition(tugas *head, tugas *end, tugas *&newHead, tugas *&newEnd)
+{
+    tugas *pivot = end;
     tugas *prev = nullptr, *cur = head, *tail = pivot;
-    
+
     newHead = nullptr;
-    
-    while (cur != pivot) {
-        if (strcmp(cur->judul, pivot->judul) < 0) {
+
+    while (cur != pivot)
+    {
+        if (caseInsensitiveCompare(cur->judul, pivot->judul) < 0)
+        {
             if (newHead == nullptr)
                 newHead = cur;
             prev = cur;
             cur = cur->next;
-        } else {
+        }
+        else
+        {
             if (prev)
                 prev->next = cur->next;
-            tugas* tmp = cur->next;
+            tugas *tmp = cur->next;
             cur->next = nullptr;
             tail->next = cur;
             tail = cur;
             cur = tmp;
         }
     }
-    
+
     if (newHead == nullptr)
         newHead = pivot;
-    
+
     newEnd = tail;
     return pivot;
 }
-tugas* quickSortRecur(tugas* head, tugas* end) {
+tugas *quickSortRecur(tugas *head, tugas *end)
+{
     if (!head || head == end)
         return head;
-        
+
     tugas *newHead = nullptr, *newEnd = nullptr;
-    tugas* pivot = partition(head, end, newHead, newEnd);
-    
-    if (newHead != pivot) {
-        tugas* tmp = newHead;
+    tugas *pivot = partition(head, end, newHead, newEnd);
+
+    if (newHead != pivot)
+    {
+        tugas *tmp = newHead;
         while (tmp->next != pivot)
             tmp = tmp->next;
         tmp->next = nullptr;
-        
+
         newHead = quickSortRecur(newHead, tmp);
-        
+
         tmp = getTail(newHead);
         tmp->next = pivot;
     }
-    
+
     pivot->next = quickSortRecur(pivot->next, newEnd);
-    
+
     return newHead;
 }
-void quickSort(tugas*& headRef) {
-    if (!headRef) return;
-    
+void quickSort(tugas *&headRef)
+{
+    if (!headRef)
+        return;
+
     headRef = quickSortRecur(headRef, getTail(headRef));
 }
 
-int prioritasValue(const string& prioritas)
+int prioritasValue(const string &prioritas)
 {
-    if (prioritas == "Tinggi") return 3;
-    if (prioritas == "Sedang") return 2;
+    if (prioritas == "Tinggi")
+        return 3;
+    if (prioritas == "Sedang")
+        return 2;
     return 1;
 }
 void selectionSortByPrioritas(tugas *head)
@@ -207,18 +239,21 @@ void selectionSortByPrioritas(tugas *head)
 }
 void bubbleSortByDeadline(tugas *head)
 {
+    if (!head)
+        return;
+
     bool swapped;
     tugas *ptr1;
     tugas *lptr = nullptr;
-    if (head == nullptr)
-        return;
+
     do
     {
         swapped = false;
         ptr1 = head;
+
         while (ptr1->next != lptr)
         {
-            if (ptr1->deadline > ptr1->next->deadline)
+            if (strcmp(ptr1->deadline, ptr1->next->deadline) > 0)
             {
                 swapNodes(ptr1, ptr1->next);
                 swapped = true;
@@ -450,7 +485,7 @@ void hapusTugas(tugas *&head)
     do
     {
         cout << "------menu hapus------" << endl;
-        cout << "1. hapus berdasarkan judul" << endl;
+        cout << "1. pilih tugas yg di hapus " << endl;
         cout << "2. hapus semua tugas" << endl;
         cout << "3. kembali ke menu" << endl;
         cout << "pilih: ";
