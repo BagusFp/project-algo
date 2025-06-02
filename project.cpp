@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstring> // library untuk string manipulation
-#include <cstdio>// library untuk file handling
+#include <cstdio>  // library untuk file handling
 using namespace std;
-// 
+//
 struct tugas
 {
     char judul[100];
@@ -346,7 +346,7 @@ void sequentialSearchByJudul(tugas *head)
         head = head->next;
     }
     if (!found)
-    {   
+    {
         cout << "Tidak ditemukan tugas dengan judul tersebut!\n";
     }
 }
@@ -630,7 +630,7 @@ int main()
         }
 
     } while (pilihan != 7);
-// membersihkan memori
+    // membersihkan memori
     while (head)
     {
         tugas *temp = head;
